@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:./app/db/dev.db
+      - JWT_SECRET=kawok-vape-jwt-secret-change-in-production
+    volumes:
+      - ./db:/app/db
+      - ./uploads:/app/uploads
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - kawok-network
+
+  db:
+    image: sqlite:latest
+    container_name: kawok-db
+    volumes:
+      - ./db:/app/db
+    networks:
+      - kawok-network
+
+  # Optional: Add phpMyAdmin for database management (not needed for SQLite but kept for reference)
+  # phpmyadmin:
+  #   image: phpmyadmin/phpmyadmin
+  #   container_name: kawok-phpmyadmin
+  #   ports:
+  #     - "8080:80"
+  #   environment:
+  #     PMA_HOST: db
+  #     PMA_USER: root
+  #     PMA_PASSWORD: rootpassword
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - kawok-network
+
+networks:
+  kawok-network:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local

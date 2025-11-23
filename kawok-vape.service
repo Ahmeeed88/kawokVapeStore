@@ -1,0 +1,22 @@
+[Unit]
+Description=KawokVapeStore - POS & Inventory System
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/kawok-vape-store
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=10
+Environment=NODE_ENV=production
+Environment=DATABASE_URL="file:./dev.db"
+Environment=JWT_SECRET="your-very-secure-jwt-secret-change-this"
+
+# Logs
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=kawok-vape
+
+[Install]
+WantedBy=multi-user.target

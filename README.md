@@ -1,141 +1,322 @@
-# 🚀 Welcome to Z.ai Code Scaffold
+# 🛒 KawokVapeStore - Simple POS & Inventory System
 
-A modern, production-ready web application scaffold powered by cutting-edge technologies, designed to accelerate your development with [Z.ai](https://chat.z.ai)'s AI-powered coding assistance.
+Aplikasi web Point of Sale (POS) dan Inventory sederhana untuk toko vape dengan nama **KawokVapeStore**. Aplikasi ini dirancang khusus untuk admin mengelola produk, stok, harga, mencatat tanggal barang masuk/keluar, stock opname, dan melihat laporan yang bisa difilter berdasarkan tanggal.
 
-## ✨ Technology Stack
+## ✨ Fitur Utama
 
-This scaffold provides a robust foundation built with:
+### 🔐 Autentikasi
+- Login admin (email + password)
+- Single role: admin
+- Session-based authentication dengan JWT
 
-### 🎯 Core Framework
-- **⚡ Next.js 15** - The React framework for production with App Router
-- **📘 TypeScript 5** - Type-safe JavaScript for better developer experience
-- **🎨 Tailwind CSS 4** - Utility-first CSS framework for rapid UI development
+### 📦 Manajemen Produk
+- CRUD produk lengkap (sku, nama, deskripsi, kategori, harga beli/jual, stok, foto)
+- SKU unik untuk setiap produk
+- Pencarian dan filter produk
+- Badge indikator stok rendah/habis
 
-### 🧩 UI Components & Styling
-- **🧩 shadcn/ui** - High-quality, accessible components built on Radix UI
-- **🎯 Lucide React** - Beautiful & consistent icon library
-- **🌈 Framer Motion** - Production-ready motion library for React
-- **🎨 Next Themes** - Perfect dark mode in 2 lines of code
+### 📊 Manajemen Stok & Mutasi
+- Catat stok masuk (manual) dengan qty, tanggal, dan keterangan
+- Catat stok keluar (manual) untuk koreksi atau pengeluaran lainnya
+- Audit trail lengkap di tabel `stock_movements`
+- Stock opname dengan perhitungan selisih dan konfirmasi penyesuaian
 
-### 📋 Forms & Validation
-- **🎣 React Hook Form** - Performant forms with easy validation
-- **✅ Zod** - TypeScript-first schema validation
+### 💳 POS / Kasir
+- Halaman kasir sederhana dengan pencarian produk (SKU/nama)
+- Shopping cart dengan management quantity
+- Pembayaran: Cash dan Transfer (manual)
+- Invoice/struk dengan nomor unik format `KAWOK-YYYYMMDD-XXXX`
+- Update stok otomatis setelah transaksi
 
-### 🔄 State Management & Data Fetching
-- **🐻 Zustand** - Simple, scalable state management
-- **🔄 TanStack Query** - Powerful data synchronization for React
-- **🌐 Axios** - Promise-based HTTP client
+### 📈 Laporan Dinamis
+- Filter berdasarkan date range (from/to)
+- Report types:
+  - Sales (list + total)
+  - Stock level (current stock per product)
+  - Top-selling (rank by quantity)
+  - Stock movements (mutasi antara tanggal)
+- Export ke CSV dan JSON
 
-### 🗄️ Database & Backend
-- **🗄️ Prisma** - Next-generation Node.js and TypeScript ORM
-- **🔐 NextAuth.js** - Complete open-source authentication solution
+### ⚙️ Settings
+- Company/store profile (nama, alamat, kontak)
+- Currency (default: IDR)
+- Low stock threshold configuration
+- Backup database instructions
 
-### 🎨 Advanced UI Features
-- **📊 TanStack Table** - Headless UI for building tables and datagrids
-- **🖱️ DND Kit** - Modern drag and drop toolkit for React
-- **📊 Recharts** - Redefined chart library built with React and D3
-- **🖼️ Sharp** - High performance image processing
+## 🛠️ Teknologi yang Digunakan
 
-### 🌍 Internationalization & Utilities
-- **🌍 Next Intl** - Internationalization library for Next.js
-- **📅 Date-fns** - Modern JavaScript date utility library
-- **🪝 ReactUse** - Collection of essential React hooks for modern development
+### Backend
+- **Next.js 15** dengan App Router
+- **TypeScript 5** untuk type safety
+- **Prisma ORM** dengan SQLite
+- **JWT** untuk autentikasi
+- **bcryptjs** untuk password hashing
 
-## 🎯 Why This Scaffold?
+### Frontend
+- **React 19** dengan Server Components
+- **Tailwind CSS 4** untuk styling
+- **shadcn/ui** component library
+- **Lucide React** untuk icons
+- **React Hook Form** dengan Zod validation
 
-- **🏎️ Fast Development** - Pre-configured tooling and best practices
-- **🎨 Beautiful UI** - Complete shadcn/ui component library with advanced interactions
-- **🔒 Type Safety** - Full TypeScript configuration with Zod validation
-- **📱 Responsive** - Mobile-first design principles with smooth animations
-- **🗄️ Database Ready** - Prisma ORM configured for rapid backend development
-- **🔐 Auth Included** - NextAuth.js for secure authentication flows
-- **📊 Data Visualization** - Charts, tables, and drag-and-drop functionality
-- **🌍 i18n Ready** - Multi-language support with Next Intl
-- **🚀 Production Ready** - Optimized build and deployment settings
-- **🤖 AI-Friendly** - Structured codebase perfect for AI assistance
+### Database
+- **SQLite** untuk single-host deployment
+- Schema lengkap dengan relasi yang terdefinisi dengan baik
 
 ## 🚀 Quick Start
 
+### Prerequisites
+- Node.js 18+ 
+- npm atau yarn
+
+### Installation
+
+1. **Clone dan install dependencies**
 ```bash
+git clone <repository-url>
+cd kawok-vape-store
+npm install
+```
+
+2. **Setup environment variables**
+```bash
+cp .env.example .env
+# Edit .env sesuai kebutuhan
+```
+
+3. **Setup database**
+```bash
+# Generate Prisma client
+npm run db:generate
+
+# Push schema ke database
+npm run db:push
+
+# Seed data (admin user + sample products)
+npm run db:seed
+```
+
+4. **Start development server**
+```bash
+npm run dev
+```
+
+5. **Buka aplikasi**
+- URL: http://localhost:3000
+- Login dengan:
+  - Email: `admin@kawokvape.com`
+  - Password: `admin123`
+
+## 🐳 Docker Deployment
+
+### Menggunakan Docker Compose
+
+1. **Build dan start containers**
+```bash
+docker-compose up --build
+```
+
+2. **Akses aplikasi**
+- URL: http://localhost:3000
+
+3. **Stop containers**
+```bash
+docker-compose down
+```
+
+### Manual Deployment (VPS/Hosting)
+
+1. **Persiapkan environment**
+```bash
+# Install Node.js 18+
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# Clone repository
+git clone <repository-url>
+cd kawok-vape-store
+
 # Install dependencies
 npm install
+```
 
-# Start development server
-npm run dev
+2. **Setup production environment**
+```bash
+# Copy environment file
+cp .env.example .env
 
-# Build for production
+# Edit .env untuk production
+NODE_ENV=production
+JWT_SECRET=your-very-secure-jwt-secret
+DATABASE_URL="file:./dev.db"
+```
+
+3. **Build dan setup database**
+```bash
+# Generate Prisma client
+npm run db:generate
+
+# Setup database
+npm run db:push
+
+# Seed data (optional)
+npm run db:seed
+```
+
+4. **Start production server**
+```bash
 npm run build
-
-# Start production server
 npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see your application running.
+5. **Setup Reverse Proxy (nginx)**
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
 
-## 🤖 Powered by Z.ai
-
-This scaffold is optimized for use with [Z.ai](https://chat.z.ai) - your AI assistant for:
-
-- **💻 Code Generation** - Generate components, pages, and features instantly
-- **🎨 UI Development** - Create beautiful interfaces with AI assistance  
-- **🔧 Bug Fixing** - Identify and resolve issues with intelligent suggestions
-- **📝 Documentation** - Auto-generate comprehensive documentation
-- **🚀 Optimization** - Performance improvements and best practices
-
-Ready to build something amazing? Start chatting with Z.ai at [chat.z.ai](https://chat.z.ai) and experience the future of AI-powered development!
-
-## 📁 Project Structure
-
-```
-src/
-├── app/                 # Next.js App Router pages
-├── components/          # Reusable React components
-│   └── ui/             # shadcn/ui components
-├── hooks/              # Custom React hooks
-└── lib/                # Utility functions and configurations
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
 ```
 
-## 🎨 Available Features & Components
+## 📁 Database Schema
 
-This scaffold includes a comprehensive set of modern web development tools:
+### Core Tables
+- **users** - Data user/admin
+- **products** - Master data produk
+- **stock_movements** - Audit trail semua pergerakan stok
+- **sales** - Header transaksi penjualan
+- **sale_items** - Detail item penjualan
+- **stock_opnames** - Header stock opname
+- **stock_opname_items** - Detail item stock opname
+- **settings** - Konfigurasi sistem
 
-### 🧩 UI Components (shadcn/ui)
-- **Layout**: Card, Separator, Aspect Ratio, Resizable Panels
-- **Forms**: Input, Textarea, Select, Checkbox, Radio Group, Switch
-- **Feedback**: Alert, Toast (Sonner), Progress, Skeleton
-- **Navigation**: Breadcrumb, Menubar, Navigation Menu, Pagination
-- **Overlay**: Dialog, Sheet, Popover, Tooltip, Hover Card
-- **Data Display**: Badge, Avatar, Calendar
+### Business Rules
+- Semua stok dalam satuan PCS (tidak ada konversi)
+- SKU harus unik
+- Penjualan otomatis mengurangi stok
+- Stock opname wajib konfirmasi untuk update stok
+- Nomor invoice format: `KAWOK-YYYYMMDD-XXXX`
 
-### 📊 Advanced Data Features
-- **Tables**: Powerful data tables with sorting, filtering, pagination (TanStack Table)
-- **Charts**: Beautiful visualizations with Recharts
-- **Forms**: Type-safe forms with React Hook Form + Zod validation
+## 🔒 Security Features
 
-### 🎨 Interactive Features
-- **Animations**: Smooth micro-interactions with Framer Motion
-- **Drag & Drop**: Modern drag-and-drop functionality with DND Kit
-- **Theme Switching**: Built-in dark/light mode support
+- Password hashing dengan bcryptjs
+- JWT token untuk session management
+- HTTP-only cookies untuk token storage
+- Server-side validation untuk semua input
+- SQL injection prevention dengan Prisma ORM
+- XSS protection dengan React built-in features
 
-### 🔐 Backend Integration
-- **Authentication**: Ready-to-use auth flows with NextAuth.js
-- **Database**: Type-safe database operations with Prisma
-- **API Client**: HTTP requests with Axios + TanStack Query
-- **State Management**: Simple and scalable with Zustand
+## 📦 Backup & Maintenance
 
-### 🌍 Production Features
-- **Internationalization**: Multi-language support with Next Intl
-- **Image Optimization**: Automatic image processing with Sharp
-- **Type Safety**: End-to-end TypeScript with Zod validation
-- **Essential Hooks**: 100+ useful React hooks with ReactUse for common patterns
+### Manual Backup
+```bash
+# Stop aplikasi
+sudo systemctl stop kawok-vape
 
-## 🤝 Get Started with Z.ai
+# Backup database
+cp prisma/dev.db backup/backup-$(date +%Y%m%d-%H%M%S).db
 
-1. **Clone this scaffold** to jumpstart your project
-2. **Visit [chat.z.ai](https://chat.z.ai)** to access your AI coding assistant
-3. **Start building** with intelligent code generation and assistance
-4. **Deploy with confidence** using the production-ready setup
+# Start aplikasi
+sudo systemctl start kawok-vape
+```
+
+### Automated Backup (Cron)
+```bash
+# Edit crontab
+crontab -e
+
+# Add backup script (setiap hari jam 2 pagi)
+0 2 * * * cd /path/to/kawok-vape-store && mkdir -p backup && cp prisma/dev.db backup/backup-$(date +\%Y\%m\%d-\%H\%M\%S).db && find backup/ -name "*.db" -mtime +7 -delete
+```
+
+## 🎯 Default Credentials
+
+- **Email:** admin@kawokvape.com
+- **Password:** admin123
+- **Currency:** IDR
+- **Low Stock Threshold:** 10 items
+
+## 📝 API Endpoints
+
+### Authentication
+- `POST /api/auth/login` - Login admin
+- `POST /api/auth/logout` - Logout admin
+
+### Products
+- `GET /api/products` - List produk dengan pagination & filter
+- `POST /api/products` - Tambah produk baru
+- `GET /api/products/[id]` - Detail produk
+- `PUT /api/products/[id]` - Update produk
+- `DELETE /api/products/[id]` - Hapus produk
+
+### Stock & POS
+- `GET /api/stock-movements` - List mutasi stok
+- `POST /api/stock-movements` - Catat mutasi stok
+- `GET /api/sales` - List penjualan
+- `POST /api/sales` - Proses transaksi POS
+
+### Reports & Settings
+- `GET /api/reports` - Generate laporan (sales, stock, top-selling, movements)
+- `GET /api/settings` - Get settings
+- `POST /api/settings` - Update settings
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+1. **Database connection error**
+```bash
+# Check database file exists
+ls -la prisma/dev.db
+
+# Regenerate Prisma client
+npm run db:generate
+npm run db:push
+```
+
+2. **Port already in use**
+```bash
+# Kill process on port 3000
+sudo lsof -ti:3000 | xargs kill -9
+```
+
+3. **Permission denied**
+```bash
+# Fix file permissions
+sudo chown -R $USER:$USER .
+chmod -R 755 .
+```
+
+## 📄 License
+
+MIT License - feel free to use this project for commercial or personal use.
+
+## 🤝 Contributing
+
+1. Fork project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📞 Support
+
+For support and questions:
+- Email: support@kawokvape.com
+- Documentation: Check this README file
+- Issues: Create GitHub issue for bugs
 
 ---
 
-Built with ❤️ for the developer community. Supercharged by [Z.ai](https://chat.z.ai) 🚀
+Built with ❤️ for vape store owners. Simple, reliable, and easy to use.
