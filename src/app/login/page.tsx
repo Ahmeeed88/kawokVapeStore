@@ -38,10 +38,8 @@ export default function LoginPage() {
 
       if (response.ok) {
         console.log('Login successful, redirecting...');
-        // Add small delay and force redirect
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 100);
+        // Use Next.js redirect instead of window.location
+        router.replace('/');
       } else {
         console.log('Login failed:', data.error);
         setError(data.error || 'Login gagal');
