@@ -56,14 +56,21 @@ export default function DashboardPage() {
 
   const fetchDashboardData = async () => {
     try {
+      console.log('Fetching dashboard data...');
       const response = await fetch('/api/dashboard');
+      console.log('Dashboard response status:', response.status);
+      
       if (response.ok) {
         const dashboardData = await response.json();
+        console.log('Dashboard data received:', dashboardData);
         setData(dashboardData);
       } else {
-        setError('Gagal memuat data dashboard');
+        const errorData = await response.json();
+        console.log('Dashboard error:', errorData);
+        setError(errorData.error || 'Gagal memuat data dashboard');
       }
     } catch (error) {
+      console.error('Dashboard fetch error:', error);
       setError('Terjadi kesalahan koneksi');
     } finally {
       setLoading(false);
