@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
   },
   // 禁用 Next.js 热重载，由 nodemon 处理重编译
   reactStrictMode: false,
+  // Force middleware to run in Node.js runtime instead of Edge
+  experimental: {
+    runtime: 'nodejs',
+  },
   webpack: (config, { dev }) => {
     if (dev) {
       // 禁用 webpack 的热模块替换

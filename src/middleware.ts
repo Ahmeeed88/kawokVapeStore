@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken } from '@/lib/auth';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'kawok-vape-secret-key';
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('auth-token')?.value;
@@ -33,30 +35,32 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  const payload = verifyToken(token);
-  if (!payload) {
-    console.log('Middleware: Invalid token, redirecting to login');
+  // Verify token directly in middleware
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    console.log('Token decoded successfully:', decoded.email);
+    
+    // Add user info to request headers for API routes
+    if (request.nextUrl.pathname.startsWith('/api/')) {
+      const requestHeaders = new Headers(request.headers);
+      requestHeaders.set('x-user-id', decoded.userId);
+      requestHeaders.set('x-user-email', decoded.email);
+      requestHeaders.set('x-user-name', decoded.name);
+      requestHeaders.set('x-user-is-admin', decoded.isAdmin.toString());
+
+      return NextResponse.next({
+        request: {
+          headers: requestHeaders,
+        },
+      });
+    }
+
+    console.log('Middleware: Valid token, allowing access');
+    return NextResponse.next();
+  } catch (error) {
+    console.error('Token verification failed:', error);
     return NextResponse.redirect(new URL('/login', request.url));
   }
-
-  console.log('Middleware: Valid token, allowing access');
-
-  // Add user info to request headers for API routes
-  if (request.nextUrl.pathname.startsWith('/api/')) {
-    const requestHeaders = new Headers(request.headers);
-    requestHeaders.set('x-user-id', payload.userId);
-    requestHeaders.set('x-user-email', payload.email);
-    requestHeaders.set('x-user-name', payload.name);
-    requestHeaders.set('x-user-is-admin', payload.isAdmin.toString());
-
-    return NextResponse.next({
-      request: {
-        headers: requestHeaders,
-      },
-    });
-  }
-
-  return NextResponse.next();
 }
 
 export const config = {
