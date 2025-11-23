@@ -5,7 +5,10 @@ export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json();
 
+    console.log('Login attempt:', { email, passwordProvided: !!password });
+
     if (!email || !password) {
+      console.log('Missing email or password');
       return NextResponse.json(
         { error: 'Email dan password wajib diisi' },
         { status: 400 }
@@ -13,8 +16,10 @@ export async function POST(request: NextRequest) {
     }
 
     const user = await authenticateUser(email, password);
+    console.log('Authentication result:', user ? 'Success' : 'Failed');
 
     if (!user) {
+      console.log('Invalid credentials');
       return NextResponse.json(
         { error: 'Email atau password salah' },
         { status: 401 }
@@ -27,6 +32,8 @@ export async function POST(request: NextRequest) {
       name: user.name,
       isAdmin: user.isAdmin,
     });
+
+    console.log('Token generated successfully');
 
     const response = NextResponse.json({
       message: 'Login berhasil',
@@ -46,6 +53,7 @@ export async function POST(request: NextRequest) {
       maxAge: 7 * 24 * 60 * 60, // 7 days
     });
 
+    console.log('Login successful, response sent');
     return response;
   } catch (error) {
     console.error('Login error:', error);

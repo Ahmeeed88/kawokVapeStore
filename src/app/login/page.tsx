@@ -21,6 +21,8 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
 
+    console.log('Submitting login:', { email, passwordProvided: !!password });
+
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
@@ -30,14 +32,19 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password }),
       });
 
+      console.log('Response status:', response.status);
       const data = await response.json();
+      console.log('Response data:', data);
 
       if (response.ok) {
+        console.log('Login successful, redirecting...');
         router.push('/');
       } else {
+        console.log('Login failed:', data.error);
         setError(data.error || 'Login gagal');
       }
     } catch (error) {
+      console.error('Login catch error:', error);
       setError('Terjadi kesalahan koneksi');
     } finally {
       setLoading(false);
