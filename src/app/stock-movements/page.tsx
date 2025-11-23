@@ -65,7 +65,7 @@ export default function StockMovementsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
-  const [type, setType] = useState('');
+  const [type, setType] = useState('ALL');
   const [productId, setProductId] = useState('');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
@@ -255,7 +255,7 @@ export default function StockMovementsPage() {
                     <SelectValue placeholder="Semua tipe" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Semua tipe</SelectItem>
+                    <SelectItem value="ALL">Semua tipe</SelectItem>
                     <SelectItem value="IN">Masuk</SelectItem>
                     <SelectItem value="OUT">Keluar</SelectItem>
                     <SelectItem value="ADJUST">Penyesuaian</SelectItem>

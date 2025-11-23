@@ -52,7 +52,7 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState('ALL');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -260,7 +260,7 @@ export default function ProductsPage() {
                     <SelectValue placeholder="Semua kategori" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Semua kategori</SelectItem>
+                    <SelectItem value="ALL">Semua kategori</SelectItem>
                     <SelectItem value="Starter Kit">Starter Kit</SelectItem>
                     <SelectItem value="Liquid">Liquid</SelectItem>
                     <SelectItem value="Aksesoris">Aksesoris</SelectItem>
