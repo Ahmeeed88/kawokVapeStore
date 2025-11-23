@@ -3,6 +3,12 @@ import { verifyToken } from '@/lib/auth';
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('auth-token')?.value;
+  
+  console.log('Middleware:', { 
+    path: request.nextUrl.pathname, 
+    hasToken: !!token,
+    userAgent: request.headers.get('user-agent')
+  });
 
   // Public routes that don't require authentication
   const publicRoutes = ['/login'];
@@ -17,18 +23,23 @@ export function middleware(request: NextRequest) {
   );
 
   if (isPublicRoute || isPublicApiRoute) {
+    console.log('Middleware: Public route, allowing access');
     return NextResponse.next();
   }
 
   // Check for token in protected routes
   if (!token) {
+    console.log('Middleware: No token, redirecting to login');
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
   const payload = verifyToken(token);
   if (!payload) {
+    console.log('Middleware: Invalid token, redirecting to login');
     return NextResponse.redirect(new URL('/login', request.url));
   }
+
+  console.log('Middleware: Valid token, allowing access');
 
   // Add user info to request headers for API routes
   if (request.nextUrl.pathname.startsWith('/api/')) {

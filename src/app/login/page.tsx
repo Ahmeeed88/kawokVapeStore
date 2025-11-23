@@ -38,7 +38,10 @@ export default function LoginPage() {
 
       if (response.ok) {
         console.log('Login successful, redirecting...');
-        router.push('/');
+        // Add small delay and force redirect
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 100);
       } else {
         console.log('Login failed:', data.error);
         setError(data.error || 'Login gagal');

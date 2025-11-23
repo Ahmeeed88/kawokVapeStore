@@ -25,8 +25,12 @@ export function generateToken(payload: JWTPayload): string {
 
 export function verifyToken(token: string): JWTPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as JWTPayload;
-  } catch {
+    console.log('Verifying token:', token ? 'Token exists' : 'No token');
+    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload;
+    console.log('Token decoded successfully:', decoded.email);
+    return decoded;
+  } catch (error) {
+    console.error('Token verification failed:', error);
     return null;
   }
 }
