@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
+import { jwtVerify } from 'jose';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'kawok-vape-secret-key';
+const JWT_SECRET = new TextEncoder().encode(
+  process.env.JWT_SECRET || 'kawok-vape-secret-key'
+);
 
 export function middleware(request: NextRequest) {
   // Skip middleware for static files and API routes that don't need auth
@@ -27,18 +29,18 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // Verify token
+  // Verify token using jose (Edge compatible)
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as any;
-    console.log('Token decoded successfully:', decoded.email);
+    const { payload } = await jwtVerify(token, JWT_SECRET);
+    console.log('Token decoded successfully:', payload.email);
     
     // Add user info to request headers for API routes
     if (request.nextUrl.pathname.startsWith('/api/')) {
       const requestHeaders = new Headers(request.headers);
-      requestHeaders.set('x-user-id', decoded.userId);
-      requestHeaders.set('x-user-email', decoded.email);
-      requestHeaders.set('x-user-name', decoded.name);
-      requestHeaders.set('x-user-is-admin', decoded.isAdmin.toString());
+      requestHeaders.set('x-user-id', payload.userId);
+      requestHeaders.set('x-user-email', payload.email);
+      requestHeaders.set('x-user-name', payload.name);
+      requestHeaders.set('x-user-is-admin', payload.isAdmin.toString());
 
       return NextResponse.next({
         request: {
